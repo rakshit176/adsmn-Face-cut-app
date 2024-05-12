@@ -120,8 +120,8 @@ tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
 tensorflow==2.9.0
 tensorflow-estimator==2.9.0
-tensorflow-intel==2.16.1
-tensorflow-io-gcs-filesystem==0.31.0
+tensorflow-intel=
+tensorflow-io-gcs-filesystem
 termcolor==1.1.0
 thop==0.1.1.post2209072238
 threadpoolctl==3.5.0
