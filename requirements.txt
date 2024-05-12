@@ -129,12 +129,12 @@ tifffile
 timm
 toml
 toolz
-torch
+torch==1.9.0
 tornado
 tqdm
 typing_extensions
 tzdata
-ultralytics
+ultralytics==8.2.13
 urllib3
 watchdog
 Werkzeug
