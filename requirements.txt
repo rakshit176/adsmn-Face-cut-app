@@ -70,8 +70,8 @@ numpy
 oauthlib
 omegaconf
 onnxruntime
-opencv-python
-opencv-python-headless
+opencv-python==4.9.0.80
+opencv-python-headless==4.9.0.80
 opt-einsum
 optree
 packaging
