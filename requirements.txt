@@ -128,9 +128,9 @@ tifffile==2024.5.10
 timm==0.9.16
 toml==0.10.2
 toolz==0.12.1
-torch==2.3.0
-torchaudio==0.9.0
-torchvision==0.18.0
+torch
+torchaudio
+torchvision
 tornado==6.4
 tqdm==4.66.4
 typing_extensions==4.11.0
