@@ -32,7 +32,6 @@ google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.63.0
 gunicorn==22.0.0
-h5py==3.1.0
 huggingface-hub==0.23.0
 humanfriendly==10.0
 idna==3.7
