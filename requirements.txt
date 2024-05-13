@@ -129,7 +129,7 @@ tifffile
 timm
 toml
 toolz
-torch==1.9.0
+torch
 tornado
 tqdm
 typing_extensions
