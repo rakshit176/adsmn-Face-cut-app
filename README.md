@@ -36,11 +36,8 @@ To use the script, follow these steps:
 Once installed, you can use the script as follows:
 
 ```bash
-python main.py path/to/your/image.jpg
+python app.py 
 ```
-
-Replace `path/to/your/image.jpg` with the path to the image file you want to process.
-
 ### Example
 
 Here's an example of how to use the script:
