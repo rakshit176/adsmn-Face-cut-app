@@ -70,8 +70,8 @@ numpy
 oauthlib
 omegaconf
 onnxruntime
-opencv-python==4.9.0.80
-opencv-python-headless==4.9.0.80
+opencv-python
+opencv-python-headless
 opt-einsum
 optree
 packaging
@@ -134,7 +134,7 @@ tornado
 tqdm
 typing_extensions
 tzdata
-ultralytics==8.2.13
+ultralytics
 urllib3
 watchdog
 Werkzeug
