@@ -50,7 +50,7 @@ def display_ui():
 def display_footer():
     """Displays a custom footer."""
     footer = """<div style="position: fixed; bottom: 0; left: 20px;">
-                <p>Developed with ❤ by <a href="https://github.com/balewgize" target="_blank">@rakshit</a></p>
+                <p>Developed with ❤ by <a href="https://github.com/rakshit176/adsmn-Face-cut-app" target="_blank">@rakshit176</a></p>
                 </div>"""
     st.sidebar.markdown(footer, unsafe_allow_html=True)
 
@@ -96,7 +96,12 @@ def process_face_cut(image_bytes):
     print("Number of faces detected:", len(faces))
     if len(faces) >= 2 :
         st.error(f'Number of faces expected 1 but found {len(faces)}', icon="🚨")
-        st.warning("Please upload an image.")
+        st.warning("Please upload an image with single.")
+        result = img_to_bytes(img)
+        return Image.open(io.BytesIO(result)).convert("RGBA")
+    elif len(faces) == 0 :
+        st.error(f'Number of faces expected 1 but found {len(faces)}', icon="🚨")
+        st.warning("Please upload an image with face.")
         result = img_to_bytes(img)
         return Image.open(io.BytesIO(result)).convert("RGBA")
     else:    
