@@ -12,6 +12,7 @@ from scipy.ndimage.filters import gaussian_filter
 from face_detection import FaceDetection
 from trimap_class import trimap , Erosion
 import os, sys
+from refine_mask import ImageProcessing
 # from pymatting import *
 
 class SemanticSegmentationModel:
@@ -31,6 +32,7 @@ class SemanticSegmentationModel:
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         ])
+        self.refine_process = ImageProcessing()
 
     def resize_target_resolution(self, image, target_size):
         width, height = image.size
@@ -45,6 +47,22 @@ class SemanticSegmentationModel:
 
         resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
         return resized_image
+    
+    def erode_and_dilate(self, mask, k_size, iterations):
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, k_size)
+        eroded = cv2.erode(mask, kernel, iterations=iterations)
+        dilated = cv2.dilate(mask, kernel, iterations=iterations)
+        trimap = np.full(mask.shape, 128)
+        trimap[eroded >= 254] = 255
+        trimap[dilated <= 1] = 0
+        return trimap
+
+    def generate_trimap(self, mask, threshold=0.05, iterations=3):
+        threshold = threshold * 255
+        trimap = mask.copy()
+        trimap = trimap.astype("uint8")
+        trimap = self.erode_and_dilate(trimap, k_size=(7, 7), iterations=iterations)
+        return trimap
     
     def process_face_image(self, im, parsing_anno, stride=1):
         im = np.array(im)
@@ -63,25 +81,14 @@ class SemanticSegmentationModel:
             face_masks.append(vis_parsing_anno_bg)
         
         face_masks_combined = np.logical_or.reduce(face_masks).astype(np.uint8) * 255  # Convert to uint8
-        face_masks_combined = gaussian_filter(face_masks_combined, sigma=1)
+        face_masks_combined = gaussian_filter(face_masks_combined, sigma=2)
+        trimap_image = self.generate_trimap(face_masks_combined)
         mask_bg = Image.fromarray(mask_bg)
-        face_masks_combined = Image.fromarray(face_masks_combined)
-        mask_bg = mask_bg.convert("RGBA")
-        face_masks_combined = face_masks_combined.convert("L")
-        mask_bg.putalpha(face_masks_combined)
-        # trimap_image = trimap(face_masks_combined, self.size , DEFG=Erosion, num_iter=3)
-        # mask_bg = Image.fromarray(mask_bg)
-        # trimap_image = Image.fromarray(trimap_image)
-        # face_masks_combined = Image.fromarray(face_masks_combined)
-        # mask_bg = self.load_image(mask_bg, "RGB", self.scale, "box")
-        # trimap_image = self.load_image(trimap_image, "GRAY", self.scale, "nearest")
-        # alpha = estimate_alpha_cf(mask_bg, trimap_image)
-        # background = np.zeros(mask_bg.shape)
-        # background[:, :] = [0.5, 0.5, 0.5]
-        # foreground = estimate_foreground_ml(mask_bg, alpha)
-        # cutout = stack_images(foreground, alpha)
-        # cutout = self.cv2_to_pil(cutout)
-        return mask_bg
+        trimap_image = Image.fromarray(trimap_image)
+        input_img = self.refine_process.get_data(mask_bg, trimap_image)
+        alpha = self.refine_process.infer_one_image(input_img)
+        cutout = self.refine_process.cal_foreground(mask_bg,alpha)
+        return cutout
     
     def cv2_to_pil(self,image):
         assert image.dtype in [np.uint8, np.float32, np.float64]
@@ -133,7 +140,8 @@ class SemanticSegmentationModel:
 if __name__ == "__main__":
     model = SemanticSegmentationModel(model_path="79999_iter.pth")
     face_model = FaceDetection()
-    img = Image.open("original.png")
+    refine_process = ImageProcessing()
+    img = Image.open("1.png")
     faces = face_model.detect_face(img)
     print("Number of faces detected:", len(faces))
     if len(faces) >= 2 :
