@@ -7,6 +7,8 @@ import uuid
 from face_detection import FaceDetection
 from predict import SemanticSegmentationModel
 import cv2
+from huggingface_hub import hf_hub_download
+
 
 MAX_FILES = 5
 ALLOWED_TYPES = ["png", "jpg", "jpeg"]
@@ -148,6 +150,7 @@ def main():
 
 
 if __name__ == "__main__":
+    segment_path  = hf_hub_download("Rakshit123/face_parse", "79999_iter.pth")
     face_model = FaceDetection()
-    model = SemanticSegmentationModel(model_path="79999_iter.pth")
+    model = SemanticSegmentationModel(model_path=segment_path)
     main()
