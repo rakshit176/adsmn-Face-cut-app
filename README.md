@@ -1,6 +1,8 @@
 # adsmn-Face-cut-app
 Face cut APP to remove face from images
 
+#### Link to run app : http://ec2-34-232-53-179.compute-1.amazonaws.com:8501/
+
 ### Python Script
 
 The main component of this repository is the Python script `predict.py`, which performs semantic segmentation and face processing on images.
